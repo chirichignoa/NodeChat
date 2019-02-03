@@ -18,14 +18,12 @@ io.on('connection', (socket) => {
         console.log('user was disconnected');
     });
 
-    socket.emit('newMessage', {
-        to: 'chirichignoa@gmail.com',
-        text: "Hola, ATR!",
-        sentAt: new Date()
-    });
-
     socket.on('createMessage', function(message) {
-        console.log('creating message: ' + JSON.stringify(message));
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        });
     });
 });
 
