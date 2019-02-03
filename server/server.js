@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 let server = http.createServer(app);
 let io = socketIO(server);
 
-var {generateMessage} = require('./utils/messageBuilder');
+var {generateMessage, generateLocationMessage} = require('./utils/messageBuilder');
 
 io.on('connection', (socket) => {
     console.log('new user connected');
@@ -28,12 +28,11 @@ io.on('connection', (socket) => {
 
     socket.on('createMessage', function(message, callback) {
         io.emit('newMessage', generateMessage(message.from, message.text));
-        // socket.broadcast.emit('newMessage', {
-        //     from: message.from,
-        //     text: message.text,
-        //     createdAt: new Date().getTime()
-        // });
         callback();
+    });
+
+    socket.on('createLocationMessage', function(coords) {
+        io.emit('newLocationMessage', generateLocationMessage('Admin',coords.latitude, coords.longitude));
     });
 });
 
