@@ -10,20 +10,14 @@ const port = process.env.PORT || 3000;
 let server = http.createServer(app);
 let io = socketIO(server);
 
+var {generateMessage} = require('./utils/messageBuilder');
+
 io.on('connection', (socket) => {
     console.log('new user connected');
     
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Welcome to chat app',
-        createdAt: new Date().getTime()
-    });
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to chat app'));
 
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text: 'New user joined',
-        createdAt: new Date().getTime()
-    });
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
 
     socket.on('disconnect', () => {
         console.log('user was disconnected');
@@ -33,11 +27,7 @@ io.on('connection', (socket) => {
     // socket.broadcast.emit from admin new user joined
 
     socket.on('createMessage', function(message) {
-        io.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        });
+        io.emit('newMessage', generateMessage(message.from, message.text));
         // socket.broadcast.emit('newMessage', {
         //     from: message.from,
         //     text: message.text,
