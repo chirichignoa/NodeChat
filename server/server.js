@@ -26,13 +26,14 @@ io.on('connection', (socket) => {
     // socket emit from admin text welcome to chat app
     // socket.broadcast.emit from admin new user joined
 
-    socket.on('createMessage', function(message) {
+    socket.on('createMessage', function(message, callback) {
         io.emit('newMessage', generateMessage(message.from, message.text));
         // socket.broadcast.emit('newMessage', {
         //     from: message.from,
         //     text: message.text,
         //     createdAt: new Date().getTime()
         // });
+        callback();
     });
 });
 
